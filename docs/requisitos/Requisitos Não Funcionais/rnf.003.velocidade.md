@@ -1,8 +1,8 @@
 # Segurança
 
-**COMO** operador de caixa,   
-**QUERO** registrar vendas rapidamente, 
-**PARA** agilizar o atendimento ao cliente sem atrasos.
+**COMO** operador de caixa,     
+**QUERO** registrar vendas rapidamente,   
+**PARA** agilizar o atendimento ao cliente sem atrasos.  
 
 **Critérios de aceitação:**
 
