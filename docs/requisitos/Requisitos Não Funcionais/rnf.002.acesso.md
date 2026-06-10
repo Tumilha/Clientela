@@ -1,4 +1,4 @@
-# Segurança
+# Acesso
 
 **COMO** gerente/dono,    
 **QUERO** visualizar os relatórios financeiros do sistema,  

@@ -1,4 +1,4 @@
-# Segurança
+# Velocidade
 
 **COMO** operador de caixa,     
 **QUERO** registrar vendas rapidamente,   
