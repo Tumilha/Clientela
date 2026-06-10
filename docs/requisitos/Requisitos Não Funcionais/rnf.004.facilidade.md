@@ -1,4 +1,4 @@
-# Segurança
+# Facilidade
 
 **COMO** funcionário,    
 **QUERO** utilizar uma tela de vendas simples e intuitiva,  
