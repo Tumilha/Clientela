@@ -1,4 +1,4 @@
-# Alertas* 
+# Alertas   
 
 **Como** gestor de estoque,  
 **Quero** receber alertas quando um produto estiver próximo de acabar,   
