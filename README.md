@@ -1,4 +1,16 @@
-# Clientela
-O sistema Clientela foi feito para ajudar a gerenciar as principais operações de um supermercado. Ele controla o caixa, gerencia o estoque e cadastra produtos e clientes.
-O objetivo é tornar automáticos processos que geralmente são feitos à mão ou de forma descentralizada. Isso dá mais agilidade, precisão e controle para o supermercado.
-Com isso, o sistema ajuda a tomar decisões mais certas, reduzir perdas e melhorar o atendimento ao cliente.
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
