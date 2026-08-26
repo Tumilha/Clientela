@@ -11,3 +11,55 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+
+model Cliente{
+    CpfCliente  String  @id @db.VarChar(11)
+    NomeCLiente     String  @db.VarChar(45)
+    EmailCliente    String  @db.VarChar(45)
+    TelefoneCliente String  @db.VarChar(45)
+
+    Vendas          Venda[]
+}
+
+model Produto {
+    IdProduto   Int         @id @default(autoincrement())
+    NomeProduto String      @db.VarChar(45)
+    Preco      Float
+    Tipo        String      @db.VarChar(45)
+    Quantidade  Int
+
+    ItensVenda  ItemVenda[]
+}
+
+model Venda {
+    NotaFiscal  Int         @id @default(autoincrement())
+    Data        DateTime
+    ValorTotal  Float
+
+    CpfCliente       String      @db.VarChar(11)
+    CpfFuncionario   String      @db.VarChar(11)
+
+    Cliente          Cliente     @relation(fields: [CpfCliente], references: [CpfCliente])
+    Funcionario      Funcionario @relation(fields: [CpfFuncionario], references: [CpfFunc])
+
+    ItensVenda       ItemVenda[]
+}
+
+model Funcionario {
+    CpfFunc     String      @id @db.VarChar(11)
+    NomeFunc    String      @db.VarChar(45)
+    Cargo       String      @db.VarChar(45)
+    Salario     Float
+
+    Vendas      Venda[]
+}
+
+model ItemVenda {
+    IdItem      Int         @id @default(autoincrement())
+    Quantidade  Int
+    Preco       Float
+
+    Venda           Venda       @relation(fields: [NotaFiscal], references: [NotaFiscal])
+    Produto         Produto     @relation(fields: [IdProduto], references: [IdProduto])
+}
