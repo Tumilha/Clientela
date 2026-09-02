@@ -5,7 +5,7 @@ function App(){
   return(
 
     <Routes>
-      <Route />
+      <Route path="/" element={<inicial />} />
     </Routes>
   )
 }
