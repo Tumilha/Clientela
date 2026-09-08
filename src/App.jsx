@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import Inicial from "./Componentes/Inicial/Inicial"
+import Inicial from "../componentes/inicial/inicial"
+import login from "../componentes/login/login"
 
 function App() {
   return (
