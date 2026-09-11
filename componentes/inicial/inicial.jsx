@@ -9,7 +9,7 @@ function Inicial() {
                 <button><Link to='/caixa'>Caixa</Link></button>
                 <button><Link to='/admin'>Admin</Link></button>
             </div>
-
+                <div></div>
         </div>
     );
 }

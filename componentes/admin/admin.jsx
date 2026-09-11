@@ -1,6 +1,10 @@
+
+
 function Admin() {
     return (
-        <h1>Admin</h1>
+        <div>
+            <h1>Hello world</h1>
+        </div>
     );
 }
 
