@@ -1,6 +1,16 @@
 function Inicial() {
     return (
-        <h1>Página inicial</h1>
+        <div>
+            <div>
+                <button><Link to='/login'></Link>Login</button>
+                <button><Link to ='/cadastro'></Link>Cadastro</button>
+            </div>
+            <div>
+                <button><Link to='/caixa'>Caixa</Link></button>
+                <button><Link to='/admin'>Admin</Link></button>
+            </div>
+
+        </div>
     );
 }
 
