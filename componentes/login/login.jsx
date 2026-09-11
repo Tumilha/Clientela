@@ -1,1 +1,7 @@
-<h1>Hello World</h1>
+function Login() {
+    return (
+        <h1>Hello world</h1>
+    );
+}
+
+export default Login;

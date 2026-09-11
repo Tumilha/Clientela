@@ -1,18 +1,19 @@
 import { Routes, Route } from "react-router-dom";
-import Inicial from "../componentes/inicial/inicial"
-import login from "../componentes/login/login"
-import admin from "../componentes/admin/admin"
-import caixa from "../componentes/caixa/caixa"
-import cadastro from "../componentes/cadastro/cadastro"
+import Inicial from "../componentes/Inicial/inicial"
+import Login from "../componentes/Login/login"
+import Admin from "../componentes/Admin/admin"
+import Caixa from "../componentes/Caixa/caixa"
+import Cadastro from "../componentes/Cadastro/cadastro"
 
 function App() {
   return (
     <Routes>
-      <Route path="/inicial" element={<inicial />} />
-      <Route path="/login" element={<login />} />
-      <Route path="/admin" element={<admin />} />
-      <Route path="/caixa" element={<caixa />} />
-      <Route path="/cadastro" element={<cadastro />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/inicial" element={<Inicial />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/caixa" element={<Caixa />} />
+      <Route path="/cadastro" element={<Cadastro />} />
 
     </Routes>
   );
