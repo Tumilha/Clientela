@@ -1,69 +1,66 @@
-import { useState } from "react";
-import "./Login.css"
+import React, { useState } from 'react';
+import './login.css';
 
 function Login() {
- const [form, setForm] = useState({
-    nome: "",
-    email: "",
-    senha: "",
-  });
+  const [usuario, setUsuario] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    setForm({
-      ...form,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    console.log("Dados enviados:", form);
+  const handleLogin = (e) => {
+    e.preventDefault();
+  
+    console.log('Dados enviados:', { usuario, email, senha });
   };
 
   return (
-    <div className="Tela">
-     <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="nome">Nome:</label>
-        <input
-          type="text"
-          id="nome"
-          name="nome"
-          value={form.nome}
-          onChange={handleChange}
-          required
-        />
-      </div>
+    <div className="login-container">
+      <div className="login-card">
+        <h1 className="login-titulo">Acesso ao Sistema</h1>
 
-      <div>
-        <label htmlFor="email">E-mail:</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
-      </div>
+        <form onSubmit={handleLogin} className="login-form">
+          <div className="form-group">
+            <label htmlFor="usuario">Nome de Usuário</label>
+            <input
+              type="text"
+              id="usuario"
+              placeholder="Digite seu nome de usuário"
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
+              required
+            />
+          </div>
 
-      <div>
-        <label htmlFor="senha">Senha:</label>
-        <input
-          type="password"
-          id="senha"
-          name="senha"
-          value={form.senha}
-          onChange={handleChange}
-          required
-        />
-      </div>
+          <div className="form-group">
+            <label htmlFor="email">E-mail</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Digite seu e-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-      <button type="submit">Cadastrar</button>
-     </form>
+          <div className="form-group">
+            <label htmlFor="senha">Senha</label>
+            <input
+              type="password"
+              id="senha"
+              placeholder="Digite sua senha"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              required
+            />
+          </div>
+
+          <button type="submit" className="login-button">
+            Entrar
+          </button>
+        </form>
+
+        <span className="login-footer">🌀 Clientela</span>
+      </div>
     </div>
   );
 }
