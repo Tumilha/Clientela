@@ -3,7 +3,7 @@ import Inicial from "../componentes/Inicial/Inicial"
 import Login from "../componentes/Login/Login"
 import Admin from "../componentes/Admin/Admin"
 import Caixa from "../componentes/Caixa/Caixa"
-import Cadastro from "../componentes/Cadastro/Cadastro"
+import Cadastro from "../componentes/cadastro/cadastro"
 
 function App() {
   return (
