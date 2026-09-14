@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Cadastro.css";
 
 const estadoInicial = {
@@ -18,16 +18,34 @@ function formatarMoeda(valorDigitado) {
   });
 }
 
-// Transforma "R$ 1.234,56" em 1234.56 (número puro, pronto pro backend)
+// Transforma "R$ 1.234,56" em 1234.56 (número puro)
 function precoParaNumero(precoFormatado) {
-  const limpo = precoFormatado.replace(/[^\d,]/g, "").replace(",", ".");
-  return Number(limpo || 0);
+  const apenasNumerosEVirgula = precoFormatado
+    .replace(/\s/g, "")
+    .replace(/[^0-9,]/g, "")
+    .replace(",", ".");
+    
+  return Number(apenasNumerosEVirgula || 0);
 }
 
 function Cadastro({ onCadastrar }) {
   const [produto, setProduto] = useState(estadoInicial);
   const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [produtosCadastrados, setProdutosCadastrados] = useState([]);
+
+  // Carrega os produtos salvos no localStorage assim que a tela abre
+  useEffect(() => {
+    const salvos = localStorage.getItem("produtos_clientela");
+    if (salvos) {
+      try {
+        setProdutosCadastrados(JSON.parse(salvos));
+      } catch (err) {
+        console.error("Erro ao ler produtos do localStorage", err);
+      }
+    }
+  }, []);
 
   function atualizarCampo(campo, valor) {
     setProduto((atual) => ({ ...atual, [campo]: valor }));
@@ -45,41 +63,56 @@ function Cadastro({ onCadastrar }) {
   async function handleSubmit(evento) {
     evento.preventDefault();
     setErro("");
+    setSucesso("");
 
-    if (!produto.codigo.trim() || !produto.nome.trim()) {
+    const codigoLimpo = produto.codigo.trim();
+    const nomeLimpo = produto.nome.trim();
+
+    // 1. Validação de campos obrigatórios
+    if (!codigoLimpo || !nomeLimpo) {
       setErro("Preencha o código e o nome do produto.");
       return;
     }
 
+    // 2. Validação de PREÇO
     const precoNumerico = precoParaNumero(produto.preco);
-    if (!precoNumerico) {
+    if (!precoNumerico || precoNumerico <= 0) {
       setErro("Informe um preço válido.");
       return;
     }
 
+    // 3. Validação de CÓDIGO DUPLICADO
+    const codigoExiste = produtosCadastrados.some(
+      (p) => p.code.toLowerCase() === codigoLimpo.toLowerCase()
+    );
+
+    if (codigoExiste) {
+      setErro(`Já existe um produto cadastrado com o código "${codigoLimpo}".`);
+      return;
+    }
+
     const novoProduto = {
-      codigo: produto.codigo.trim(),
-      nome: produto.nome.trim(),
-      preco: precoNumerico,
-      quantidade: Number(produto.quantidade || 0),
+      id: Date.now(),
+      code: codigoLimpo,
+      description: nomeLimpo,
+      price: precoNumerico,
+      quantity: Number(produto.quantidade || 0),
     };
 
     try {
       setEnviando(true);
 
+      // Atualiza a lista local e salva no LocalStorage do navegador
+      const novaLista = [...produtosCadastrados, novoProduto];
+      setProdutosCadastrados(novaLista);
+      localStorage.setItem("produtos_clientela", JSON.stringify(novaLista));
+
+      // Se houver prop passada pelo componente pai, avisa ele também
       if (onCadastrar) {
-        // Passe essa prop em <Cadastro onCadastrar={...} /> se quiser
-        // controlar o envio a partir de um componente pai (ex: Admin.jsx)
         await onCadastrar(novoProduto);
-      } else {
-        // TODO: troque pela rota real do seu backend (ex: POST /produtos)
-        await fetch("/api/produtos", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(novoProduto),
-        });
       }
 
+      setSucesso("Produto cadastrado com sucesso!");
       setProduto(estadoInicial);
     } catch (err) {
       setErro("Não foi possível cadastrar o produto. Tente novamente.");
@@ -91,9 +124,10 @@ function Cadastro({ onCadastrar }) {
   return (
     <div className="cadastro-fundo">
       <form className="cadastro-card" onSubmit={handleSubmit}>
-        <h1 className="cadastro-titulo">cadastro de Produto</h1>
+        <h1 className="cadastro-titulo">Cadastro de Produto</h1>
 
         {erro && <p className="cadastro-erro">{erro}</p>}
+        {sucesso && <p className="cadastro-sucesso" style={{ color: "green", marginBottom: "10px" }}>{sucesso}</p>}
 
         <div className="cadastro-campo">
           <label htmlFor="codigo">Código</label>
