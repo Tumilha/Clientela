@@ -102,7 +102,7 @@ function Caixa() {
             <div className="shortcuts-grid">
               <button>F2 Código</button>
               <button>F3 Pesquisa</button>
-              <button>CS/F11 CPF</button>
+              <button>Ctrl+P CPF</button>
               <button>F5 Excluir</button>
               <button>F6 Alterar</button>
               <button>Ctrl+R Produto</button>
