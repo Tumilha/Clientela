@@ -8,21 +8,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Cliente {
-  CpfCliente      String  @id @db.VarChar(11)
-  NomeCLiente     String  @db.VarChar(45)
-  EmailCliente    String  @db.VarChar(45)
-  TelefoneCliente String  @db.VarChar(45)
-
-  Vendas Venda[]
-}
-
 model Produto {
   IdProduto   Int      @id @default(autoincrement())
   Codigo      String   @unique @db.VarChar(45)
   NomeProduto String   @db.VarChar(45)
   Preco       Float
-  Tipo        String   @db.VarChar(45)
   Quantidade  Int
 
   ItensVenda ItemVenda[]
