@@ -24,30 +24,40 @@ function Login({ onLogin }) {
     const emailLimpo = credenciais.email.trim();
     const senhaLimpa = credenciais.senha.trim();
 
-    // 1. Validação de campos obrigatórios
+    
     if (!usuarioLimpo || !emailLimpo || !senhaLimpa) {
       setErro("Preencha todos os campos obrigatórios.");
       return;
     }
 
-    // 2. Validação básica de formato de e-mail
-    if (!emailLimpo.includes("@") || !emailLimpo.includes(".")) {
-      setErro("Informe um e-mail válido.");
+    
+    if (!emailLimpo.includes("@")) {
+      setErro("O e-mail precisa conter o símbolo '@'.");
+      return;
+    }
+
+    
+    const dominio = emailLimpo.split("@")[1];
+    if (!dominio || !dominio.includes(".")) {
+      setErro("O e-mail precisa conter um ponto (ex: .com ou .br) após o '@'.");
       return;
     }
 
     try {
       setEnviando(true);
 
+      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const dadosUsuario = {
         usuario: usuarioLimpo,
         email: emailLimpo,
       };
 
-      // Salva a sessão no LocalStorage
+      
       localStorage.setItem("usuario_logado", JSON.stringify(dadosUsuario));
 
-      // Se houver prop enviada pelo componente pai (ex: redirecionar de tela)
+      
       if (onLogin) {
         await onLogin(dadosUsuario);
       }
@@ -82,7 +92,7 @@ function Login({ onLogin }) {
           <label htmlFor="email">E-mail</label>
           <input
             id="email"
-            type="email"
+            type="text"
             placeholder="Digite seu e-mail"
             value={credenciais.email}
             onChange={(e) => atualizarCampo("email", e.target.value)}
@@ -104,7 +114,7 @@ function Login({ onLogin }) {
           {enviando ? "Entrando..." : "Entrar"}
         </button>
 
-        <p className="login-rodape">🌀 Clientela</p>
+        <p className="login-rodape"> 🌀 Clientela</p>
       </form>
     </div>
   );
