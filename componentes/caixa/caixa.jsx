@@ -1,21 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import './Caixa.css';
 
 function Caixa() {
-
   const [code, setCode] = useState('');
   const [currentProduct, setCurrentProduct] = useState(null);
-  const [cart, setCart] = useState([
-    { id: 1, code: '789', description: 'ARROZ TIPO 1', quantity: 1, price: 22.00 },
-    { id: 2, code: '4567', description: 'REFRIGERANTE 2L', quantity: 2, price: 8.90 },
-    { id: 3, code: '8652', description: 'BISCOITO CHOCOLATE', quantity: 3, price: 4.50 },
-    { id: 4, code: '9753', description: 'LEITE INTEGRAL', quantity: 5, price: 5.00 },
-    { id: 5, code: '2011', description: 'CAFÉ 500G', quantity: 1, price: 12.00 },
-  ]);
-
-  const [receivedAmount, setReceivedAmount] = useState(110.45);
+  const [cart, setCart] = useState([]);
+  const [receivedAmount, setReceivedAmount] = useState(0);
   const inputRef = useRef(null);
 
+  // Mantém o input sempre focado
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -23,8 +16,96 @@ function Caixa() {
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const change = receivedAmount > subtotal ? receivedAmount - subtotal : 0;
 
-  const handleKeyDown = async (e) => {
-    if (e.key === 'Enter' && code) {
+  // Funções de Ações / Atalhos
+  const handleNovaVenda = useCallback(() => {
+    if (window.confirm('Deseja iniciar uma nova venda?')) {
+      setCart([]);
+      setCurrentProduct(null);
+      setReceivedAmount(0);
+      setCode('');
+    }
+  }, []);
+
+  const handleExcluirItem = useCallback(() => {
+    if (cart.length === 0) {
+      alert('Não há itens no carrinho para excluir.');
+      return;
+    }
+    setCart((prevCart) => {
+      const updated = [...prevCart];
+      updated.pop(); // Remove o último item adicionado (poderia ser por índice selecionado)
+      if (updated.length === 0) setCurrentProduct(null);
+      return updated;
+    });
+  }, [cart.length]);
+
+  const handleFinalizarVenda = useCallback(() => {
+    if (cart.length === 0) {
+      alert('O carrinho está vazio.');
+      return;
+    }
+    const valorPago = prompt(`Subtotal: R$ ${subtotal.toFixed(2)}. Digite o valor recebido:`, subtotal.toFixed(2));
+    if (valorPago !== null) {
+      const pago = parseFloat(valorPago.replace(',', '.'));
+      if (isNaN(pago) || pago < subtotal) {
+        alert('Valor recebido inválido ou insuficiente!');
+      } else {
+        setReceivedAmount(pago);
+        alert(`Venda finalizada com sucesso! Troco: R$ ${(pago - subtotal).toFixed(2)}`);
+        // Limpa para a próxima venda
+        setCart([]);
+        setCurrentProduct(null);
+        setReceivedAmount(0);
+      }
+    }
+  }, [cart.length, subtotal]);
+
+  // Listener global para os Atalhos de Teclado (F-keys)
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      // Previne o comportamento padrão do navegador para as teclas de função (ex: F5 atualizar a página)
+      if (['F2', 'F3', 'F5', 'F6', 'F9', 'F11'].includes(e.key)) {
+        e.preventDefault();
+      }
+
+      switch (e.key) {
+        case 'F2':
+        case 'Ctrl': // focar no input
+          inputRef.current?.focus();
+          break;
+        case 'F3':
+          alert('Funcionalidade de Pesquisa de Produtos (Abra seu modal aqui)');
+          break;
+        case 'F5':
+          handleExcluirItem();
+          break;
+        case 'F6':
+          alert('Funcionalidade de Alterar Quantidade');
+          break;
+        case 'F9':
+          handleNovaVenda();
+          break;
+        case 'F11':
+          handleFinalizarVenda();
+          break;
+        case 'Escape':
+          setCode('');
+          setCurrentProduct(null);
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown);
+    };
+  }, [handleExcluirItem, handleNovaVenda, handleFinalizarVenda]);
+
+  // Adicionar produto via Enter no Input
+  const handleKeyDownInput = async (e) => {
+    if (e.key === 'Enter' && code.trim() !== '') {
       try {
         const response = await fetch(`http://localhost:3000/products/${code}`);
         if (response.ok) {
@@ -44,15 +125,17 @@ function Caixa() {
           setCode('');
         } else {
           alert('Produto não encontrado!');
+          setCode('');
         }
       } catch (err) {
         console.error('Erro na requisição ao backend', err);
+        alert('Erro ao conectar com o servidor.');
       }
     }
   };
 
-    return (
-        <div className="pdv-wrapper">
+  return (
+    <div className="pdv-wrapper">
       <div className="pdv-container">
         
         {/* Cabeçalho */}
@@ -84,7 +167,7 @@ function Caixa() {
                 className="code-input"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                onKeyDown={handleKeyDown}
+                onKeyDown={handleKeyDownInput}
               />
             </div>
 
@@ -95,20 +178,20 @@ function Caixa() {
 
             <div className="info-row">
               <span>TOTAL ITEM</span>
-              <strong>R$ {currentProduct ? currentProduct.price.toFixed(2).replace('.', ',') : '0,00'}</strong>
+              <strong>R$ {currentProduct ? (currentProduct.price * (cart.find(i => i.code === currentProduct.code)?.quantity || 1)).toFixed(2).replace('.', ',') : '0,00'}</strong>
             </div>
 
-            {/* Grid de Atalhos */}
+            {/* Grid de Atalhos (Agora clicáveis também!) */}
             <div className="shortcuts-grid">
-              <button>F2 Código</button>
-              <button>F3 Pesquisa</button>
-              <button>Ctrl+P CPF</button>
-              <button>F5 Excluir</button>
-              <button>F6 Alterar</button>
-              <button>Ctrl+R Produto</button>
-              <button>F9 Nova</button>
-              <button>F11 Venda</button>
-              <button>ESC Sair</button>
+              <button onClick={() => inputRef.current?.focus()}>F2 Código</button>
+              <button onClick={() => alert('Pesquisa')}>F3 Pesquisa</button>
+              <button onClick={() => alert('CPF na Nota')}>CS/F11 CPF</button>
+              <button onClick={handleExcluirItem}>F5 Excluir</button>
+              <button onClick={() => alert('Alterar Qtd')}>F6 Alterar</button>
+              <button onClick={() => alert('Produto')}>Ctrl+R Produto</button>
+              <button onClick={handleNovaVenda}>F9 Nova</button>
+              <button onClick={handleFinalizarVenda}>F11 Venda</button>
+              <button onClick={() => { setCode(''); setCurrentProduct(null); }}>ESC Sair</button>
             </div>
           </div>
 
@@ -129,16 +212,24 @@ function Caixa() {
                   </tr>
                 </thead>
                 <tbody>
-                  {cart.map((item, index) => (
-                    <tr key={item.id}>
-                      <td>{index + 1}</td>
-                      <td>{item.code}</td>
-                      <td>{item.description}</td>
-                      <td>{item.quantity}</td>
-                      <td>{item.price.toFixed(2).replace('.', ',')}</td>
-                      <td>{(item.price * item.quantity).toFixed(2).replace('.', ',')}</td>
+                  {cart.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
+                        Nenhum produto lançado
+                      </td>
                     </tr>
-                  ))}
+                  ) : (
+                    cart.map((item, index) => (
+                      <tr key={item.id}>
+                        <td>{index + 1}</td>
+                        <td>{item.code}</td>
+                        <td>{item.description}</td>
+                        <td>{item.quantity}</td>
+                        <td>{item.price.toFixed(2).replace('.', ',')}</td>
+                        <td>{(item.price * item.quantity).toFixed(2).replace('.', ',')}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -155,7 +246,7 @@ function Caixa() {
               </div>
               <div className="total-box subtotal-box">
                 <span className="total-label">SUBTOTAL</span>
-                <span className="total-value">{subtotal.toFixed(2).replace('.', ',')}</span>
+                <span className="total-value">R$ {subtotal.toFixed(2).replace('.', ',')}</span>
               </div>
             </div>
           </div>
@@ -163,7 +254,7 @@ function Caixa() {
         </div>
       </div>
     </div>
-    );
+  );
 }
 
 export default Caixa;

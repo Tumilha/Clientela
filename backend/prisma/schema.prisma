@@ -1,10 +1,11 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Cliente {
@@ -17,10 +18,11 @@ model Cliente {
 }
 
 model Produto {
-  IdProduto   Int         @id @default(autoincrement())
-  NomeProduto String      @db.VarChar(45)
+  IdProduto   Int      @id @default(autoincrement())
+  Codigo      String   @unique @db.VarChar(45)
+  NomeProduto String   @db.VarChar(45)
   Preco       Float
-  Tipo        String      @db.VarChar(45)
+  Tipo        String   @db.VarChar(45)
   Quantidade  Int
 
   ItensVenda ItemVenda[]
