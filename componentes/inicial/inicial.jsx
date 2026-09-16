@@ -4,16 +4,24 @@ import './Inicial.css'
 function Inicial() {
     return (
         <div>
-            <div>
-                <button><Link to='/login'>Login</Link></button>
-                <button><Link to ='/cadastro'>Cadastro</Link></button>
+            <div className="cima">
+                <Link to='/login'>
+                    <button className="b1">Login</button>
+                </Link>
+                <Link to='/cadastro'>
+                    <button className="b2">Cadastro</button>
+                </Link>
             </div>
-            <div>
-                
-                <button><Link to='/caixa'>Caixa</Link></button>
-                <button><Link to='/admin'>Admin</Link></button>
+
+            <div className="baixo">  
+                <Link to='/caixa'>
+                    <button className="b3">Caixa</button>
+                </Link>
+                <Link to='/admin'>
+                    <button className="b4">Admin</button>
+                </Link>
             </div>
-                <div></div>
+            <div></div>
         </div>
     );
 }

@@ -1,0 +1,29 @@
+*{
+    text-decoration: none   ;   
+}
+
+.cima{
+    padding: 30vh;
+    padding-top: 0;
+    padding-top: 2.0vh;
+}
+
+.b1{
+    padding: 5vh;
+    margin-right: 10vh;
+    border-radius: 5px;
+}
+.b2{
+    padding: 5vh;
+    border-radius: 5px;
+}
+
+.b3{
+    padding: 5vh;
+    margin-right: 10vh;
+    border-radius: 5px;
+}
+.b4{
+    padding: 5vh;
+    border-radius: 5px;
+}
