@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
 }
 
 model Produto {
@@ -23,10 +22,8 @@ model Venda {
   Data       DateTime
   ValorTotal Float
 
-  CpfCliente     String @db.VarChar(11)
   CpfFuncionario String @db.VarChar(11)
 
-  Cliente     Cliente     @relation(fields: [CpfCliente], references: [CpfCliente])
   Funcionario Funcionario @relation(fields: [CpfFuncionario], references: [CpfFunc])
 
   ItensVenda ItemVenda[]
