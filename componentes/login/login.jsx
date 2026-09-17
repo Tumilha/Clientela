@@ -2,9 +2,7 @@ import { useState } from "react";
 import "./login.css";
 
 const estadoInicial = {
-  usuario: "",
-  email: "",
-  senha: "",
+  cpffunc: "",
 };
 
 function Login({ onLogin }) {
@@ -20,51 +18,42 @@ function Login({ onLogin }) {
     evento.preventDefault();
     setErro("");
 
-    const usuarioLimpo = credenciais.usuario.trim();
-    const emailLimpo = credenciais.email.trim();
-    const senhaLimpa = credenciais.senha.trim();
+    const cpfLimpo = credenciais.cpffunc.trim();
 
-    
-    if (!usuarioLimpo || !emailLimpo || !senhaLimpa) {
-      setErro("Preencha todos os campos obrigatórios.");
-      return;
-    }
-
-    
-    if (!emailLimpo.includes("@")) {
-      setErro("O e-mail precisa conter o símbolo '@'.");
-      return;
-    }
-
-    
-    const dominio = emailLimpo.split("@")[1];
-    if (!dominio || !dominio.includes(".")) {
-      setErro("O e-mail precisa conter um ponto (ex: .com ou .br) após o '@'.");
+    if (!cpfLimpo) {
+      setErro("Preencha o CPF do funcionário.");
       return;
     }
 
     try {
       setEnviando(true);
 
-      
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Fazendo a requisição real para o back-end Node.js
+      const resposta = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cpffunc: cpfLimpo }),
+      });
 
-      const dadosUsuario = {
-        usuario: usuarioLimpo,
-        email: emailLimpo,
-      };
+      const dados = await resposta.json();
 
-      
-      localStorage.setItem("usuario_logado", JSON.stringify(dadosUsuario));
+      if (!resposta.ok) {
+        throw new Error(dados.error || "Erro ao realizar login.");
+      }
 
-      
+      // Salva os dados do funcionário retornado pelo banco no localStorage
+      localStorage.setItem("funcionario_logado", JSON.stringify(dados.funcionario));
+
+      // Se houver uma função passada via props, executa
       if (onLogin) {
-        await onLogin(dadosUsuario);
+        await onLogin(dados.funcionario);
       }
 
       setCredenciais(estadoInicial);
     } catch (err) {
-      setErro("Não foi possível realizar o login. Tente novamente.");
+      setErro(err.message || "Não foi possível conectar ao servidor.");
     } finally {
       setEnviando(false);
     }
@@ -78,35 +67,13 @@ function Login({ onLogin }) {
         {erro && <p className="login-erro">{erro}</p>}
 
         <div className="login-campo">
-          <label htmlFor="usuario">Nome de Usuário</label>
+          <label htmlFor="cpffunc">CPF do Funcionário</label>
           <input
-            id="usuario"
+            id="cpffunc"
             type="text"
-            placeholder="Digite seu nome de usuário"
-            value={credenciais.usuario}
-            onChange={(e) => atualizarCampo("usuario", e.target.value)}
-          />
-        </div>
-
-        <div className="login-campo">
-          <label htmlFor="email">E-mail</label>
-          <input
-            id="email"
-            type="text"
-            placeholder="Digite seu e-mail"
-            value={credenciais.email}
-            onChange={(e) => atualizarCampo("email", e.target.value)}
-          />
-        </div>
-
-        <div className="login-campo">
-          <label htmlFor="senha">Senha</label>
-          <input
-            id="senha"
-            type="password"
-            placeholder="Digite sua senha"
-            value={credenciais.senha}
-            onChange={(e) => atualizarCampo("senha", e.target.value)}
+            placeholder="Digite o CPF (apenas números)"
+            value={credenciais.cpffunc}
+            onChange={(e) => atualizarCampo("cpffunc", e.target.value)}
           />
         </div>
 

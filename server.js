@@ -2,11 +2,6 @@ import express from 'express'
 import cors from 'cors' 
 import { PrismaClient } from './generated/prisma/index.js'
 
-const prisma = new PrismaClient();
-const app = express();
-
-app.use(cors());
-app.use(express.json());
 
 //ROTAS DE PRODUTOS
 
@@ -156,8 +151,26 @@ app.post('/sales', async (req, res) => {
   }
 });
 
+const express = require("express");
+const cors = require("cors");
+
+const ProdutoRoutes = require("./routes/ProdutoRoutes");
+const CLienteRoutes = require("./routes/ClienteRoutes");
+const FuncionarioRoutes = require("./routes/FuncionarioRoutes");
+const VendaRoutes = require("./routes/VendaRoutes");
+
+const app = express();
+
+app.use(Corns());
+app.use(express.json());
+
+app.use("/products", ProdutoRoutes);
+app.use("/Clientes", ClienteRoutes);
+app.use("/employess", FuncionariosRoutes);
+app.use("sales", VendaRoutes);
+
 // Inicializando o Servidor
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor completo do caixa rodando na porta ${PORT} 🚀`);
+  console.log(`Servidor modularizado rodando na porta ${PORT} 🚀`);
 });
