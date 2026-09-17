@@ -1,5 +1,27 @@
 const prisma = require("../prisma/client");
 
+
+//ADICIONAR PRODUTOS
+async function create(req, res) {
+  try {
+    const { Codigo, NomeProduto, Preco, Quantidade } = req.body;
+
+    const produto = await prisma.produto.create({
+      data: {
+        Codigo,
+        NomeProduto,
+        Preco,
+        Quantidade
+      }
+    });
+
+    res.status(201).json(produto);
+  } catch (error) {
+    console.error("Erro ao criar produto:", error);
+    res.status(500).json({ error: "Falha ao criar produto" });
+  }
+}
+
 // LISTAR TODOS OS PRODUTOS
 async function list(req, res) {
   try {
@@ -36,15 +58,15 @@ async function get(req, res) {
 async function update(req, res) {
   try {
     const { idproduto } = req.params;
-    const { datahora, tituloproduto, descricao, administradorCpf } = req.body;
+    const { Codigo, NomeProduto, Preco, Quantidade } = req.body;
 
     const produtoAtualizado = await prisma.produto.update({
       where: { idproduto: Number(idproduto) },
       data: {
-        datahora,
-        tituloproduto,
-        descricao,
-        administradorCpf
+        Codigo,
+        NomeProduto,
+        Preco,
+        Quantidade
       }
     });
 
@@ -64,7 +86,7 @@ async function update(req, res) {
   }
 }
 
-// EXCLUIR UM PRODUTOS
+// EXCLUIR UM PRODUTO
 async function remove(req, res) {
   try {
     const { idproduto } = req.params;
@@ -92,6 +114,7 @@ async function remove(req, res) {
 }
 
 module.exports = {
+  create,
   list,
   get,
   update,
