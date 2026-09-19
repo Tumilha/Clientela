@@ -18,6 +18,7 @@ function Login({ onLogin }) {
     evento.preventDefault();
     setErro("");
 
+    // Remove espaços e garante que envia limpo
     const cpfLimpo = credenciais.cpffunc.trim();
 
     if (!cpfLimpo) {
@@ -28,7 +29,6 @@ function Login({ onLogin }) {
     try {
       setEnviando(true);
 
-      // Fazendo a requisição real para o back-end Node.js
       const resposta = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: {
@@ -43,10 +43,9 @@ function Login({ onLogin }) {
         throw new Error(dados.error || "Erro ao realizar login.");
       }
 
-      // Salva os dados do funcionário retornado pelo banco no localStorage
+      // Salva os dados do funcionário no localStorage
       localStorage.setItem("funcionario_logado", JSON.stringify(dados.funcionario));
 
-      // Se houver uma função passada via props, executa
       if (onLogin) {
         await onLogin(dados.funcionario);
       }
