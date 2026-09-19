@@ -107,7 +107,7 @@ function Caixa() {
   const handleKeyDownInput = async (e) => {
     if (e.key === 'Enter' && code.trim() !== '') {
       try {
-        const response = await fetch(`http://localhost:3000/products/${code}`);
+        const response = await fetch(`http://localhost:3000/caixa/produto/${code}`);
         if (response.ok) {
           const product = await response.json();
           setCurrentProduct(product);

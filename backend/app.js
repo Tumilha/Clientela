@@ -8,6 +8,7 @@ var cors = require('cors');
 var indexRouter = require('./routes/index');
 var produtoRouter = require('./routes/Cad');
 var loginRouter = require('./routes/Login');
+var caixaRouter = require('./routes/Caixa');
 
 var app = express();
 
@@ -21,6 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/produtos', produtoRouter);
 app.use('/login', loginRouter);
+app.use('/caixa', caixaRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));
