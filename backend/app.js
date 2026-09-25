@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var produtoRouter = require('./routes/Cad');
 var loginRouter = require('./routes/Login');
 var caixaRouter = require('./routes/Caixa');
+var adminRouter = require('./routes/Admin');
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use('/', indexRouter);
 app.use('/produtos', produtoRouter);
 app.use('/login', loginRouter);
 app.use('/caixa', caixaRouter);
+app.use('/admin', adminRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));
