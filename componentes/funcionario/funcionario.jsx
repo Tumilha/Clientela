@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import "./funcionario.css";
 
 const estadoInicial = {
@@ -40,6 +41,8 @@ function CadastroFuncionario({ onCadastrar }) {
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
   const [enviando, setEnviando] = useState(false);
+
+  const navigate = useNavigate();
 
   function atualizarCampo(campo, valor) {
     setFuncionario((atual) => ({ ...atual, [campo]: valor }));
@@ -106,6 +109,9 @@ function CadastroFuncionario({ onCadastrar }) {
 
       setSucesso("Funcionário cadastrado com sucesso!");
       setFuncionario(estadoInicial);
+
+      navigate("/login");
+
     } catch (err) {
       setErro(err.message || "Não foi possível cadastrar o funcionário.");
     } finally {

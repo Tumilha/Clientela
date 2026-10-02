@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
 
 const estadoInicial = {
@@ -87,6 +87,13 @@ function Login({ onLogin }) {
         <button type="submit" className="login-botao" disabled={enviando}>
           {enviando ? "Entrando..." : "Entrar"}
         </button>
+
+        <div>
+          <p>Ainda não é cadastrado?</p>
+          <Link to='/funcionario' className="link-criar-conta">
+            Cadastrar novo Funcionário
+          </Link>
+        </div>
 
         <p className="login-rodape"> 🌀 Clientela</p>
       </form>

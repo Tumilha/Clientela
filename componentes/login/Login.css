@@ -96,3 +96,28 @@
   font-size: 0.75rem;
   color: #8a97a5;
 }
+
+.login-cadastro-link {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #cecdcd;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 16px;
+}
+
+.login-cadastro-link p {
+  margin: 0 0 6px 0;
+}
+
+.link-criar-conta {
+  color: #53a2eb;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.link-criar-conta:hover {
+  color: #83c0f8;
+  text-decoration: underline;
+}
