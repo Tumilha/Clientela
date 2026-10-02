@@ -10,10 +10,14 @@ var produtoRouter = require('./routes/Cad');
 var loginRouter = require('./routes/Login');
 var caixaRouter = require('./routes/Caixa');
 var adminRouter = require('./routes/Admin');
+var funcionarioRouter = require('./routes/func');
 
 var app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -25,6 +29,7 @@ app.use('/produtos', produtoRouter);
 app.use('/login', loginRouter);
 app.use('/caixa', caixaRouter);
 app.use('/admin', adminRouter);
+app.use('/funcionarios', funcionarioRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));

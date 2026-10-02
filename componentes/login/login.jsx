@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./login.css";
 
 const estadoInicial = {
@@ -9,6 +10,8 @@ function Login({ onLogin }) {
   const [credenciais, setCredenciais] = useState(estadoInicial);
   const [erro, setErro] = useState("");
   const [enviando, setEnviando] = useState(false);
+
+  const navigate = useNavigate();
 
   function atualizarCampo(campo, valor) {
     setCredenciais((atual) => ({ ...atual, [campo]: valor }));
@@ -34,6 +37,7 @@ function Login({ onLogin }) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ cpffunc: cpfLimpo }),
       });
 
@@ -43,14 +47,18 @@ function Login({ onLogin }) {
         throw new Error(dados.error || "Erro ao realizar login.");
       }
 
-      // Salva os dados do funcionário no localStorage
-      localStorage.setItem("funcionario_logado", JSON.stringify(dados.funcionario));
+      // Salva o Token JWT e os dados do funcionário no sessionStorage
+      sessionStorage.setItem("token", dados.token);
+      sessionStorage.setItem("funcionario_logado", JSON.stringify(dados.funcionario));
 
       if (onLogin) {
         await onLogin(dados.funcionario);
       }
 
       setCredenciais(estadoInicial);
+
+      navigate("/caixa")
+
     } catch (err) {
       setErro(err.message || "Não foi possível conectar ao servidor.");
     } finally {

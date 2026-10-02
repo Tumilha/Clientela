@@ -13,6 +13,12 @@ function Inicial() {
                 </Link>
             </div>
 
+            <div>
+                <Link to='/funcionario'>
+                    <button className="b2">Funcionario</button>
+                </Link>
+            </div>
+            
             <div className="baixo">  
                 <Link to='/caixa'>
                     <button className="b3">Caixa</button>

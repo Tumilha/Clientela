@@ -4,6 +4,7 @@ import Login from "../componentes/Login/Login";
 import Admin from "../componentes/admin/admin";
 import Caixa from "../componentes/Caixa/Caixa";
 import Cadastro from "../componentes/cadastro/cadastro";
+import Funcionario from "../componentes/funcionario/funcionario"
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/" element={<Inicial />} />
       <Route path="/login" element={<Login />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/funcionario" element={<Funcionario/>} />
       <Route path="/caixa" element={<Caixa />} />
       <Route path="/cadastro" element={<Cadastro />} />
 
