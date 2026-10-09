@@ -4,7 +4,18 @@ import "./login.css";
 
 const estadoInicial = {
   cpffunc: "",
+  senha: "",
 };
+
+//Função de formatação do CPF
+function formatarCPF(valor) {
+  return valor
+    .replace(/\D/g, "")
+    .slice(0, 11)
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
 
 function Login({ onLogin }) {
   const [credenciais, setCredenciais] = useState(estadoInicial);
@@ -17,15 +28,21 @@ function Login({ onLogin }) {
     setCredenciais((atual) => ({ ...atual, [campo]: valor }));
   }
 
+  //Função que formata o CPF na hora
+  function handleCPFChange(evento) {
+    atualizarCampo("cpffunc", formatarCPF(evento.target.value));
+  }
+
   async function handleSubmit(evento) {
     evento.preventDefault();
     setErro("");
 
     // Remove espaços e garante que envia limpo
     const cpfLimpo = credenciais.cpffunc.trim();
+    const senhaLimpa = credenciais.senha.trim();
 
-    if (!cpfLimpo) {
-      setErro("Preencha o CPF do funcionário.");
+    if (!cpfLimpo || !senhaLimpa) {
+      setErro("Preencha o CPF e a senha do funcionário.");
       return;
     }
 
@@ -38,7 +55,7 @@ function Login({ onLogin }) {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ cpffunc: cpfLimpo }),
+        body: JSON.stringify({ cpffunc: cpfLimpo, senha: senhaLimpa }),
       });
 
       const dados = await resposta.json();
@@ -80,7 +97,18 @@ function Login({ onLogin }) {
             type="text"
             placeholder="Digite o CPF (apenas números)"
             value={credenciais.cpffunc}
-            onChange={(e) => atualizarCampo("cpffunc", e.target.value)}
+            onChange={handleCPFChange}
+          />
+        </div>
+
+        <div className="login-campo">
+          <label htmlFor="senha">Senha</label>
+          <input 
+          id="senha"
+          type="password"
+          placeholder="Digite sua senha"
+          value={credenciais.senha}
+          onChange={(e) => atualizarCampo("senha", e.target.value)} 
           />
         </div>
 

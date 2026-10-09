@@ -34,6 +34,7 @@ model Funcionario {
   NomeFunc String @db.VarChar(45)
   Cargo    String @db.VarChar(45)
   Salario  Float
+  SenhaFunc String @db.VarChar(255)
 
   Vendas Venda[]
 }

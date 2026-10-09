@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./funcionario.css";
 
 const estadoInicial = {
@@ -7,6 +7,7 @@ const estadoInicial = {
   nomefunc: "",
   cargo: "",
   salario: "",
+  senha: "",
 };
 
 function formatarMoeda(valorDigitado) {
@@ -65,6 +66,7 @@ function CadastroFuncionario({ onCadastrar }) {
     const cpfApenasNumeros = funcionario.cpffunc.replace(/\D/g, "");
     const nomeLimpo = funcionario.nomefunc.trim();
     const cargoLimpo = funcionario.cargo.trim();
+    const senhaLimpa = funcionario.senha.trim();
 
     if (!cpfApenasNumeros || cpfApenasNumeros.length !== 11) {
       setErro("Informe um CPF válido de 11 dígitos.");
@@ -94,6 +96,7 @@ function CadastroFuncionario({ onCadastrar }) {
           NomeFunc: nomeLimpo,
           Cargo: cargoLimpo,
           Salario: salarioNumerico,
+          Senha: senhaLimpa,
         }),
       });
 
@@ -110,7 +113,10 @@ function CadastroFuncionario({ onCadastrar }) {
       setSucesso("Funcionário cadastrado com sucesso!");
       setFuncionario(estadoInicial);
 
-      navigate("/login");
+      //Redireciona para o Login
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
 
     } catch (err) {
       setErro(err.message || "Não foi possível cadastrar o funcionário.");
@@ -169,6 +175,17 @@ function CadastroFuncionario({ onCadastrar }) {
             placeholder="R$ 0,00"
             value={funcionario.salario}
             onChange={handleSalarioChange}
+          />
+        </div>
+
+        <div className="cadastro-campo">
+          <label htmlFor="senha">Senha de Acesso</label>
+          <input
+            id="senha"
+            type="password"
+            placeholder="Digite a senha do funcionário"
+            value={funcionario.senha}
+            onChange={(e) => atualizarCampo("senha", e.target.value)}
           />
         </div>
 
