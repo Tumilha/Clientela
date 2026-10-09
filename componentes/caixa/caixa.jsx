@@ -6,6 +6,7 @@ function Caixa() {
   const [currentProduct, setCurrentProduct] = useState(null);
   const [cart, setCart] = useState([]);
   const [receivedAmount, setReceivedAmount] = useState(0);
+  const [isLoadingProduct, setIsLoadingProduct] = useState(false);
   const inputRef = useRef(null);
 
   // Mantém o input sempre focado
@@ -33,7 +34,7 @@ function Caixa() {
     }
     setCart((prevCart) => {
       const updated = [...prevCart];
-      updated.pop(); // Remove o último item adicionado (poderia ser por índice selecionado)
+      updated.pop(); // Remove o último item adicionado
       if (updated.length === 0) setCurrentProduct(null);
       return updated;
     });
@@ -63,14 +64,12 @@ function Caixa() {
   // Listener global para os Atalhos de Teclado (F-keys)
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
-      // Previne o comportamento padrão do navegador para as teclas de função (ex: F5 atualizar a página)
       if (['F2', 'F3', 'F5', 'F6', 'F9', 'F11'].includes(e.key)) {
         e.preventDefault();
       }
 
       switch (e.key) {
         case 'F2':
-        case 'Ctrl': // focar no input
           inputRef.current?.focus();
           break;
         case 'F3':
@@ -103,41 +102,50 @@ function Caixa() {
     };
   }, [handleExcluirItem, handleNovaVenda, handleFinalizarVenda]);
 
-  // Adicionar produto via Enter no Input
+  // Adicionar produto via Enter no Input (Com trava contra múltiplos disparos)
   const handleKeyDownInput = async (e) => {
-    if (e.key === 'Enter' && code.trim() !== '') {
-      try {
-        const response = await fetch(`http://localhost:3000/caixa/produto/${code}`);
-        if (response.ok) {
-          const product = await response.json();
-          setCurrentProduct(product);
+    if (e.key !== 'Enter' || code.trim() === '' || isLoadingProduct || e.repeat) {
+      return;
+    }
 
-          setCart((prevCart) => {
-            const existingIndex = prevCart.findIndex((item) => item.code === product.code);
-            if (existingIndex >= 0) {
-              const updated = [...prevCart];
-              updated[existingIndex].quantity += 1;
-              return updated;
-            }
-            return [...prevCart, { ...product, id: Date.now(), quantity: 1 }];
-          });
+    setIsLoadingProduct(true);
 
-          setCode('');
-        } else {
-          alert('Produto não encontrado!');
-          setCode('');
-        }
-      } catch (err) {
-        console.error('Erro na requisição ao backend', err);
-        alert('Erro ao conectar com o servidor.');
+    try {
+      const response = await fetch(`http://localhost:3000/caixa/produto/${code}`);
+      if (response.ok) {
+        const product = await response.json();
+        setCurrentProduct(product);
+
+        setCart((prevCart) => {
+          const existingIndex = prevCart.findIndex((item) => item.code === product.code);
+          if (existingIndex >= 0) {
+            const updated = [...prevCart];
+            updated[existingIndex] = {
+              ...updated[existingIndex],
+              quantity: updated[existingIndex].quantity + 1,
+            };
+            return updated;
+          }
+          return [...prevCart, { ...product, id: Date.now(), quantity: 1 }];
+        });
+
+        setCode('');
+      } else {
+        alert('Produto não encontrado!');
+        setCode('');
       }
+    } catch (err) {
+      console.error('Erro na requisição ao backend', err);
+      alert('Erro ao conectar com o servidor.');
+    } finally {
+      setIsLoadingProduct(false);
     }
   };
 
   return (
     <div className="pdv-wrapper">
       <div className="pdv-container">
-        
+       
         {/* Cabeçalho */}
         <header className="header">
           <div className="logo">
@@ -148,7 +156,7 @@ function Caixa() {
 
         {/* Conteúdo Principal */}
         <div className="main-content">
-          
+         
           {/* PAINEL ESQUERDO */}
           <div className="left-panel">
             <div className="status-box">CAIXA ABERTO</div>
@@ -178,10 +186,14 @@ function Caixa() {
 
             <div className="info-row">
               <span>TOTAL ITEM</span>
-              <strong>R$ {currentProduct ? (currentProduct.price * (cart.find(i => i.code === currentProduct.code)?.quantity || 1)).toFixed(2).replace('.', ',') : '0,00'}</strong>
+              <strong>
+                R$ {currentProduct
+                  ? (currentProduct.price * (cart.find(i => i.code === currentProduct.code)?.quantity || 1)).toFixed(2).replace('.', ',')
+                  : '0,00'}
+              </strong>
             </div>
 
-            {/* Grid de Atalhos (Agora clicáveis também!) */}
+            {/* Grid de Atalhos */}
             <div className="shortcuts-grid">
               <button onClick={() => inputRef.current?.focus()}>F2 Código</button>
               <button onClick={() => alert('Pesquisa')}>F3 Pesquisa</button>
